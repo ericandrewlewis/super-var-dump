@@ -3,12 +3,12 @@
 function super_var_dump($a) {
 	global $super_var_dump;
 
-	if ( ! $super_var_dump->instance ) {
+	if ( empty( $super_var_dump ) || ! $super_var_dump->instance ) {
 		$super_var_dump->instance = 1;
 	} else
 		$super_var_dump->instance++;
 
-	if ( ! $super_var_dump->current_depth ) {
+	if ( !isset( $super_var_dump->current_depth ) ) {
 		$super_var_dump->current_depth = 1;
 		?>
 		<script type="text/javascript">
