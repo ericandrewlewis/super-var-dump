@@ -11,5 +11,5 @@ Example Usage
         'another_array' => array(4,5,6)
     );
 
-super_var_dump($example_object);
-// outputs nested tree of variable data. 
+    super_var_dump($example_object);
+    // outputs nested tree of variable data. 
