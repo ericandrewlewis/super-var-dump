@@ -8,9 +8,6 @@ class super_var_dump {
 	private static $instance;
 	private static $current_depth;
 	static function init($a) {
-		// var_dump(self::$instance);
-		error_reporting(-1);
-		ini_set('display_errors', 1); 
 		if ( empty(self::$instance) || ! self::$instance )
 			self::$instance = 1;
 		else
