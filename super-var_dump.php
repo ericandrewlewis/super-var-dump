@@ -4,7 +4,7 @@ function super_var_dump($var) {
 }
 
 class super_var_dump {
-	
+
 	private static $instance;
 	private static $current_depth;
 	static function init($a) {
@@ -20,17 +20,17 @@ class super_var_dump {
 					var span = document.getElementById( 'super-var-dump-arrow-' + instance + '-' + depth );
 					if ( div.style.display == 'none' ) {
 						div.style.display = 'block';
-						span.innerHTML = ' v ';
+						span.innerHTML = ' <span style="font-weight: bold; color: red;">v</span> ';
 					}
 					else {
 						div.style.display = 'none';
-						span.innerHTML = ' > ';
+						span.innerHTML = ' <span style="font-weight: bold; color: red;">></span> ';
 					}
 					window.getSelection().removeAllRanges();
 				}
 			</script>
-			<?php 
-			echo '<pre style="font: 9pt Lucida Console; overflow: auto; background-color: #FCF7EC; overflow-x: auto; white-space: pre-wrap; white-space: -moz-pre-wrap !important; word-wrap: break-word; white-space: normal;">';
+			<?php
+			echo '<pre style="font: 14px/22px Lucida Console; overflow: auto; background-color: #FCF7EC; overflow-x: auto; white-space: pre-wrap; white-space: -moz-pre-wrap !important; word-wrap: break-word; white-space: normal; padding: 20px;">';
 		} else
 			self::$current_depth++;
 
@@ -38,7 +38,7 @@ class super_var_dump {
 
 		self::$current_depth--;
 		if ( ! self::$current_depth )
-			echo '</PRE>';		
+			echo '</pre>';
 	}
 
 	static function select_variable_type($a) {
@@ -58,51 +58,62 @@ class super_var_dump {
 	}
 	static function output_object($a) {
 		$object_vars = get_object_vars($a);
-		echo '<div style="padding-left:10px" id="super-var-dump-' . self::$instance . '">';
-		echo '<span id="super-var-dump-arrow-' .  self::$instance . '-' . self::$current_depth . '" style="cursor: pointer" onclick="super_var_dump_toggle_div_display(' . self::$instance . ', ' . self::$current_depth . ')"> > </span>Object';
-		echo '<div id="super-var-dump-container-' .  self::$instance . '-' . self::$current_depth . '" style="display:none; padding-left: 10px">';
-		echo '{';
-		echo '<div style="padding-left: 10px">';
+		echo '<ul style="padding:10px" id="super-var-dump-' . self::$instance . '">';
+		echo '<span id="super-var-dump-arrow-' .  self::$instance . '-' . self::$current_depth . '" style="cursor: pointer" onclick="super_var_dump_toggle_div_display(' . self::$instance . ', ' . self::$current_depth . ')"> <span style="font-weight: bold; color: red;">></span> </span>Object';
+		echo '<ul id="super-var-dump-container-' .  self::$instance . '-' . self::$current_depth . '" style="display:none; padding: 10px">';
+		echo '<li>{</li>';
+		echo '<ul style="padding: 10px">';
 		foreach ( $object_vars as $object_var_key => $object_var_value ) {
+			echo '<li style="padding: 0 0 5px 5px">';
 			echo $object_var_key . ' => ';
 			self::init($a->$object_var_key);
-			echo "\r";
+			echo '</li>';
 		}
-		echo '</div>';
-		echo '}';
+		echo '</ul>';
+		echo '<li>}</li>';
 
-		echo '</div>';
-		echo '</div>';
+		echo '</ul>';
+		echo '</ul>';
 	}
 	static function output_array($a) {
-		echo '<div style="padding-left:10px" id="super-var-dump-' . self::$instance . '">';
-		echo '<span id="super-var-dump-arrow-' .  self::$instance . '-' . self::$current_depth . '" style="cursor: pointer" onclick="super_var_dump_toggle_div_display(' . self::$instance . ', ' . self::$current_depth . ')"> > </span>array';
-			echo '<div id="super-var-dump-container-' .  self::$instance . '-' . self::$current_depth . '" style="display:none; padding-left: 10px">';
-			echo '{';
 		$keys = array_keys($a);
-		foreach($keys as $key) {
-			echo '<div style="padding-left:5px">';
-			echo "['" . $key  . "'] => ";
-			super_var_dump($a[$key]);
-			echo '</div>';
+
+		$element = ( !empty( $keys ) ) ? 'ul' : 'span';
+
+		$top = $element == 'ul' ? '<'. $element. ' style="padding:10px" id="super-var-dump-' . self::$instance . '">' : '<'. $element. ' id="super-var-dump-' . self::$instance . '">';
+
+		echo $top;
+		if ( !empty( $keys ) ) {
+			echo '<span id="super-var-dump-arrow-' .  self::$instance . '-' . self::$current_depth . '" style="cursor: pointer" onclick="super_var_dump_toggle_div_display(' . self::$instance . ', ' . self::$current_depth . ')"> <span style="font-weight: bold; color: red;">></span> </span>array';
+				echo '<ul id="super-var-dump-container-' .  self::$instance . '-' . self::$current_depth . '" style="display:none; padding: 10px">';
+			echo '{';
+			foreach($keys as $key) {
+				echo '<li style="padding: 0 0 5px 5px">';
+				echo "['" . $key  . "'] => ";
+				super_var_dump($a[$key]);
+				echo '</li>';
+			}
+			echo '}';
+			echo '</ul>';
+		} else {
+			echo 'array()';
 		}
-		echo '}';
-		echo '</div>';
-		echo '</div>';
+
+		echo '</' .$element .'>';
 	}
 	static function output_numeric($a) {
 		echo $a;
-		echo "<BR>";
+		// echo '<br style="padding: 5px 0;">';
 	}
 	static function output_string($a) {
 		if ( ! $a ) echo '""';
 		else echo $a;
-		echo '<BR>';
+		// echo '<br style="padding: 5px 0;">';
 	}
 	static function output_bool($a) {
 		if ( $a ) echo 'true';
 		else echo 'false';
-		echo '<BR>';
+		// echo '<br style="padding: 5px 0;">';
 	}
 	static function output_null($a) {
 		echo 'NULL';
